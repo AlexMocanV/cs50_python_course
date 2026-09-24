@@ -1,14 +1,15 @@
+import string
 def main():
     x = input("Greeting: ")
     x = x.split()
-    print(value(x))
-def value(greeting):
-    if greeting[0].lower() == "hello":
+    print(f"${check_greeting(x)}")
+
+def check_greeting(greet):
+    if greet[0].lower().rstrip(string.punctuation) == "hello":
         return 0
-    elif greeting[0][0].lower() == "h":
+    elif greet[0][0].lower() == "h":
         return 20
     else:
         return 100
-if __name__ == "__main__":
-    main()  
+main()
 

@@ -1,5 +1,5 @@
 def main():
-    x = input()
+    x = input("What time is it? ")
     meal(x)
 def meal(x):
     y = x.split()
@@ -14,4 +14,5 @@ def meal(x):
             print("lunch time")
         elif int(time[0]) == 6 or (int(time[0]) == 7 and int(time[1]) == 0):
             print("dinner time")
-main()
+if __name__ == "__main__":
+    main()

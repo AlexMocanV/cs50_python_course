@@ -1,21 +1,24 @@
+import sys
+import inflect
+
+p = inflect.engine()
+
+
 def main():
-    solve()
-def solve():
-    text = "Adieu, adieu, to "
     names = []
+
     while True:
         try:
-            x = input("Name: ")
-            names.append(x)
+            name = input("Name: ")
+            names.append(name)
         except EOFError:
+            print()  # Move to a new line after Ctrl+D
             break
-    if len(names) == 1:
-        print(f"{text}{names[0]}.")
-    elif len(names) == 2:
-        print(f"{text}{names[0]} and {names[1]}.")
-    else:
-        for name in names[:-1]:
-            text += f"{name}, "
-        text += f"and {names[-1]}."
-        print(text)
-main()
+
+    # p.join() joins names with commas and "and" automatically
+    joined_names = p.join(names)
+    print(f"Adieu, adieu, to {joined_names}")
+
+
+if __name__ == "__main__":
+    main()

@@ -1,12 +1,12 @@
 def main():    
-    x = input()
+    x = input("Input:")
     print(shorten(x))
 
 def shorten(x):
     result = ""
     for c in x:
         if c.lower() not in 'aeiou':
-            result += c.lower()
+            result += c
     return result
 
 if __name__ == "__main__":

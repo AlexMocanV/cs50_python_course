@@ -1,3 +1,6 @@
+def main():
+    get_items()
+    list_items()
 grocery_list = {}
 def get_items():
     while True:
@@ -12,10 +15,7 @@ def get_items():
         except EOFError:
             break
 def list_items():
-    for item, count in grocery_list.items():
+    for item, count in sorted(grocery_list.items()):
         print(f"{count} {item}")
 
-def main():
-    get_items()
-    list_items()
 main()

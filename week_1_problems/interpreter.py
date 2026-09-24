@@ -1,5 +1,5 @@
 def main():
-    x = input()
+    x = input("Input: ")
     x = x.split()
     print(op(float(x[0]), x[1], float(x[2])))
 def op(x, y, z):

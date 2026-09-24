@@ -9,5 +9,5 @@ while(due > 0):
     elif x == "5":
         due -= 5
 
-if(due < 0):
+if(due <= 0):
     print(f"Change Owed: {-due}")
