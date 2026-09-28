@@ -1,18 +1,21 @@
 def main():
     x = input("What time is it? ")
-    meal(x)
-def meal(x):
+    hour = convert(x)
+    if hour >= 7 and hour <= 8.00:
+        print("breakfast time")
+    elif hour >= 12 and hour <= 13.00:
+        print("lunch time")
+    elif hour >= 18 and hour <= 19.00:
+        print("dinner time")
+    
+def convert(x):
     y = x.split()
     time = y[0].split(sep = ":")
-    if y[1][0] == 'a': 
-        if int(time[0]) == 7 or (int(time[0]) == 8 and int(time[1]) == 0):
-            print("breakfast time")
-        elif int(time[0]) == 12: 
-            print("lunch time")
-    else :
-        if (int(time[0]) == 1 and int(time[1]) == 0):
-            print("lunch time")
-        elif int(time[0]) == 6 or (int(time[0]) == 7 and int(time[1]) == 0):
-            print("dinner time")
+    hour = int(time[0]) + (int(time[1]) / 60)
+    print(hour)
+    if len(y) == 2:
+        if y[1][0] == 'p' and int(time[0]) != 12:
+            hour += 12
+    return hour
 if __name__ == "__main__":
     main()

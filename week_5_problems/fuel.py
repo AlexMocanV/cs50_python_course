@@ -1,39 +1,38 @@
-def get_int():
+def main():
     while True:
         exp = input("Please enter an integer: ")
         try:
-            exp = exp.split(sep = "/")
-            if len(exp) != 2:
-                raise ValueError
-            x = int(exp[0])
-            if x < 0:
-                raise ValueError
-            y = int(exp[1])
-            if y < 0:
-                raise ValueError
-            if y == 0:
-                raise ZeroDivisionError
-            if x > y:
-                raise Exception
-        except ValueError:
-            pass
-        except ZeroDivisionError:
-            pass
-        except Exception:
-            pass 
-        else: 
+            fraction = convert(exp)
+            percentage = gauge(fraction)
             break
-    return (x, y)
+        except (ValueError, ZeroDivisionError, Exception) as e:
+            print(f"Error: {e}")
+    print(percentage)
 
-def main():
-    (x, y) = get_int()
-    fraction = x * 100 / y
-    if fraction <= 1:
-        print("E")
-    elif fraction >= 99:
-        print("F")
+def convert(fraction):
+    fraction = fraction.split(sep = "/")
+    if len(fraction) != 2:
+        raise ValueError
+    x = int(fraction[0])
+    if x < 0:
+        raise ValueError
+    y = int(fraction[1])
+    if y < 0:
+        raise ValueError
+    if y == 0:
+        raise ZeroDivisionError
+    if x > y:
+        raise ValueError
+    
+    return x / y * 100
+
+def gauge(percentage):
+    if percentage <= 1:
+        return "E"
+    elif percentage >= 99:
+        return "F"
     else:
-        print(f"{fraction:.0f}%")
+        return f"{percentage:.0f}%"
 
 if __name__ == "__main__":
     main()
