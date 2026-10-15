@@ -2,6 +2,8 @@ import emoji
 
 class Jar:
     def __init__(self, capacity=12):
+        if capacity < 0:
+            raise ValueError
         self._capacity = int(capacity)
         self._size = 0
 
@@ -35,7 +37,8 @@ def get_jar(capacity):
     return Jar(capacity)
 
 def main():
-    jarr = get_jar(3)
+    x = input()
+    jarr = get_jar(x)
     jarr.deposit(3)
     print(jarr)
 
