@@ -14,9 +14,10 @@ def validate_input(date_str):
     return False
 
 
-def get_difference(date_str):
+def get_difference(date_str, today_date = None):
     past_date = date.fromisoformat(date_str)
-    today_date = date.today()
+    if today_date is None:
+        today_date = date.today()
     days = (today_date - past_date).days
     return days * 24 * 60
 
