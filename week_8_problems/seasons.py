@@ -1,9 +1,9 @@
 from datetime import date
 import re
 import sys
-from num2words import num2words
+import inflect
 
-
+p = inflect.engine()
 def validate_input(date_str):
     if re.search(r"^\d{4}-\d{2}-\d{2}$", date_str):
         try:
@@ -23,7 +23,7 @@ def get_difference(date_str, today_date = None):
 
 
 def convert_to_words(minutes):
-    words = num2words(minutes, lang="en").replace(" and ", " ").capitalize()
+    words = p.number_to_words(minutes).replace(" and ", " ").capitalize()
     return f"{words} minutes"
 
 
