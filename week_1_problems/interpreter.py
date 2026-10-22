@@ -13,4 +13,5 @@ def op(x, y, z):
         return x / z
     else:
         return "Error"
-main()
+if __name__ == "__main__":
+    main()
