@@ -16,9 +16,11 @@ loaded_table_of_guesses = False
 # table of guesses
 table_of_words_guessed = []
 blank = 0
+def chr_int (a) -> int:
+    return ord(a) - ord('A')
 
 def loading_keyboard():
-    i = 0
+    
     for letter in letters:
         # set state to default
         new_list = []
@@ -34,6 +36,7 @@ def loading_keyboard():
             # Scaled the letter so they are scaled with the rezolution
             img = pygame.transform.scale(img, (game.screen.get_height() / 12, game.screen.get_height() / 12))
 
+            # Saved all textures in a list of list
             all_textures[ord(letter) - ord('A')].append(img)
             if i == 3:
                 textures[letter] = img
@@ -42,7 +45,7 @@ def loading_keyboard():
     global loaded_keyboard
     loaded_keyboard = True
 
-# Displaying the keyboard
+
 def display_keyboard():
     # Displaying the default keyboard
     global loaded_keyboard
@@ -60,7 +63,7 @@ def display_keyboard():
 
     cnt = 0
     for letter in letters:
-        textures[letter] = all_textures[ord(letter) - ord('A')][keyboard_state[ord(letter) - ord('A')]]
+        textures[letter] = all_textures[chr_int(letter)][keyboard_state[chr_int(letter)]]
         game.screen.blit(textures[letter], (x, y))
         if letter == "P" or letter == "L":
             # Modifing the positions to have a bit of space between the letters 
@@ -117,10 +120,11 @@ def load_letter(guesses, letter):
     letter = letter.upper()
     
     # Loading the default texture
-    new_texture = all_textures[ord(letter) - ord('A')][3] 
+    new_texture = all_textures[chr_int(letter)][3] 
     
-    # Changing the keyboard state to selected
-    keyboard_state[ord(letter) - ord('A')] = 1
+    # Changing the keyboard state to selected if its blank
+    if keyboard_state[chr_int(letter)] == 3:
+        keyboard_state[chr_int(letter)] = 1
 
     # Changing the table's state back to default
     curr_data = table_of_words_guessed[guesses][len(wordle.guess)]
@@ -138,10 +142,10 @@ def remove_letter(guesses):
     
     last_letter = wordle.guess[len(wordle.guess) - 1]
     
-    if frecv[ord(last_letter) - ord('A')] - 1 <= 0:
-        keyboard_state[ord(last_letter) - ord('A')] = 3
+    if frecv[chr_int(last_letter)] - 1 <= 0:
+        keyboard_state[chr_int(last_letter)] = 3
 
-    frecv[ord(last_letter) - ord('A')] -= 1
+    frecv[chr_int(last_letter)] -= 1
     
     # Changing the table's state back to default
     table_of_words_guessed[guesses][len(wordle.guess) - 1] = (
@@ -150,16 +154,20 @@ def remove_letter(guesses):
         curr_data[2]
     )
 
-def change_state(index, state):
+def change_keyboard_state(index, state):
     
     letter = ord(wordle.guess[index]) - ord('A')
 
-    #Changing the state on the keyboard
+    # Changing the state of the keyboard
     keyboard_state[letter] = state
 
-    #Changing the state on the Word Table
+def change_table_state(index, state):
+    
+    # Changing the state of the Word Table
+    letter = ord(wordle.guess[index]) - ord('A')
     
     new_texture = all_textures[letter][state]
+    
     curr_data = table_of_words_guessed[wordle.guesses][index]
 
     table_of_words_guessed[wordle.guesses][index] = (
