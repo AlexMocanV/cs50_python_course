@@ -1,7 +1,7 @@
 import pygame
 import game
 import load
-
+import csv
 guesses = 0
 guess = []
 first_keys = True
@@ -11,37 +11,79 @@ def setup():
     load.main()
 
 def add_letter(letter):
-    if len(guess) + 1 <= 5:
+    if len(guess) < 5:
         load.load_letter(guesses, letter)
+        load.frecv[load.chr_int(letter)] += 1
         guess.append(letter)
     
 def remove_letter():
     load.remove_letter(guesses)
     guess.pop()
 
-def keyboard_input():
+def hard_mode_pass():
+    for letter in load.letters:
+        if load.keyboard_state[load.chr_int(letter)] == 2 or load.keyboard_state[load.chr_int(letter)] == 4:
+            str_guess = str(guess)
+            if str_guess.find(letter) == -1:
+                return False
+    return True
 
-    keys = pygame.key.get_pressed()        
-    for i in range(len(keys)):
-        if (keys[i] == True):
-            key = str(chr(i))
-            
-            #print(len(key), key[0], key)
-            key = key.upper()
-            # Checking if the key pressed is a letter and if it is not already marked as absent
-            if len(key) == 1 and key.isalpha() == True and len(guess) < 5 and load.keyboard_state[load.chr_int(key)] != 0:
-                
-                # Keeping count of the frequency of the numbers in order to change states on the keyboard
-                load.frecv[ord(key) - ord('A')] += 1
-                add_letter(key)
-                #print("TRYING TO ADD")
+def keyboard_input(event):              
+    # Pressing a letter
+    if event.unicode and event.unicode.isalpha() and guesses <= 5:
+        key = event.unicode.upper()
+        add_letter(key)
+    # Pressing backspace / delete
+    elif event.key == pygame.K_BACKSPACE or event.key == pygame.K_DELETE: 
+        if len(guess) > 0 and guesses <= 5:
+            remove_letter()
+    # Pressing enter
+    elif event.key == pygame.K_RETURN: 
+        if len(guess) == 5 and guesses <= 5 and word_check(guess):
+            if load.hard_mode_state == 0 or (load.hard_mode_state == 1 and hard_mode_pass()):
+                return word_guess()
+    return False
 
-            elif (i == 8 or i == 127) and len(guess) > 0 and guesses <= 5: # Pressing DELETE or BACKSPACE
-                remove_letter()
-            elif (i == 13) and len(guess) == 5 and guesses <= 5: # Pressing ENTER to guess
-                word_guess()
-            #print(f"{i} f{chr(i)}") 
+def mouse_input(event):
+    for letter in load.letters:
+        curr_letter = load.keyboard[load.chr_int(letter)]
+
+        # Creates a rectangel the size of the image
+        img_rect = curr_letter[0].get_rect()
+
+        # Places the rectangle in same position as the letter
+        img_rect.topleft = (curr_letter[1], curr_letter[2])
+
+        # Checks whether the mouse position is whithin the image's coordinates at the moment of clicking
+        if img_rect.collidepoint(event.pos) and guesses <= 5:
+            add_letter(letter)
+
+    check_hard_mode(event)
+
+def check_hard_mode(event):
+
+    curr = load.hard_mode_button
+    # Creates a rectangle the size of the image
+    img_rect = curr[0].get_rect()
     
+    # Places the rectangle in same position as the button
+    img_rect.topleft = (curr[1], curr[2])
+
+    if img_rect.collidepoint(event.pos) and guesses <= 5:
+        # Changes the state of the button
+        load.hard_mode_state = (1 - load.hard_mode_state) 
+
+def word_check(wordd):
+
+    str_wordd = ''.join(wordd).upper()
+    with open("valid_words.csv", 'r', newline='\n') as input_file:
+        reader = csv.DictReader(input_file)
+        for row in reader:
+            for val in row.values():
+                if val.upper() == str_wordd:
+                    return True
+    return False
+
 def word_guess():
     
     global guess
@@ -66,18 +108,19 @@ def word_guess():
     guesses += 1
     # Converting list to string 
     str_guess = ''.join(guess)
-
+    # Checking whether te word guessed is the right one
     if str_guess == game.word or guesses == 6:
-        print("RUNNING IS SET TO FALSE")
+        #print("RUNNING IS SET TO FALSE")
         game.running = False
-        return
+        return True
     
+    for i in range(len(load.frecv)):
+        load.frecv[i] = 0
     guess.clear()
-       
-                    
+    return False
+            
 def main():
     setup()
-
 
 if __name__ == "__main__":
     main()

@@ -1,0 +1,4 @@
+what to add:
+in right botton side of the screen want to add an on of button in shich the only words that can be guessed should always contain the letters in green and yellow
+in the right upper side of the screen the text bar to display indications to the player
+in the left side of the screen i want to add some kind of graph in which it showcases by a number how many valid guesses are left and by a bar (based on how full it is)
