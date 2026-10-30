@@ -1,7 +1,6 @@
 import pygame
-import game
-import load
 import csv
+import load
 guesses = 0
 guess = []
 first_keys = True
@@ -22,13 +21,14 @@ def remove_letter():
 
 def hard_mode_pass():
     for letter in load.letters:
+        # Checking that all the letters marked with yellow or green are present in the current guess
         if load.keyboard_state[load.chr_int(letter)] == 2 or load.keyboard_state[load.chr_int(letter)] == 4:
             str_guess = str(guess)
             if str_guess.find(letter) == -1:
                 return False
     return True
 
-def keyboard_input(event):              
+def keyboard_input(event, word):              
     # Pressing a letter
     if event.unicode and event.unicode.isalpha() and guesses <= 5:
         key = event.unicode.upper()
@@ -41,7 +41,7 @@ def keyboard_input(event):
     elif event.key == pygame.K_RETURN: 
         if len(guess) == 5 and guesses <= 5 and word_check(guess):
             if load.hard_mode_state == 0 or (load.hard_mode_state == 1 and hard_mode_pass()):
-                return word_guess()
+                return word_guess(word)
     return False
 
 def mouse_input(event):
@@ -84,18 +84,19 @@ def word_check(wordd):
                     return True
     return False
 
-def word_guess():
-    
+def word_guess(word):
+
+
     global guess
     global guesses
     for i in range(5):
-        print(str(guess[i]), str(game.word[i]))
+        print(str(guess[i]), str(word[i]))
         # Checking if the letter match
-        if str(guess[i]) == str(game.word[i]):
+        if str(guess[i]) == str(word[i]):
             load.change_keyboard_state(i, 2)
             load.change_table_state(i, 2)
         # Checking if the letter is found anywhere in the word    
-        elif game.word.find(guess[i]) != -1:
+        elif word.find(guess[i]) != -1:
             if load.keyboard_state[load.chr_int(guess[i])] != 2:
                 load.change_keyboard_state(i, 4)
             load.change_table_state(i, 4)
@@ -108,10 +109,9 @@ def word_guess():
     guesses += 1
     # Converting list to string 
     str_guess = ''.join(guess)
-    # Checking whether te word guessed is the right one
-    if str_guess == game.word or guesses == 6:
+    # Checking whether the word guessed is the right one
+    if str_guess == word or guesses == 6:
         #print("RUNNING IS SET TO FALSE")
-        game.running = False
         return True
     
     for i in range(len(load.frecv)):

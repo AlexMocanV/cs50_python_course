@@ -1,6 +1,4 @@
 import pygame
-import wordle
-import game
 
 # keyboard
 states_name = ["absent_", "selected_", "correct_", "default_", "present_"]
@@ -24,8 +22,33 @@ blank = 0
 def chr_int(a) -> int:
     return ord(a) - ord('A')
 
-def load_hard_mode():
+def display_table_indicator():
 
+    import game
+    screen = game.screen
+    
+    path_of_text = "new_text_bar.png"
+        
+    img = pygame.image.load(path_of_text)
+
+    img = pygame.transform.scale(img, (screen.get_height() / 2.5,  screen.get_height() / 2.5))
+
+    distance_to_the_first_letter = (screen.get_width() - keyboard[0][0].get_width() * 10 - 10 * (keyboard[0][0].get_width() / 12)) / 2
+
+    distance_to_halfway_of_first_letter = int(screen.get_height() / 1.5) + (keyboard[0][0].get_height()) / 4
+
+    x = 0
+    y = 0
+    x, y = (distance_to_the_first_letter - 4 * keyboard[0][0].get_width(),  distance_to_halfway_of_first_letter - 6.5 * keyboard[0][0].get_width())
+
+    screen.blit(img, (x, y))
+
+
+def load_hard_mode():
+    # Importing locally to prevent circular import
+    import game
+    screen = game.screen
+    
     global hard_mode_button
     global loaded_hard_mode_button
     # Resized the buttons to be the same width as a letter    
@@ -35,21 +58,21 @@ def load_hard_mode():
     
     img_of = pygame.image.load(path_of_button)
     
-    img_of = pygame.transform.scale(img_of, (game.screen.get_height() / 12, game.screen.get_height() / 21))
+    img_of = pygame.transform.scale(img_of, (screen.get_height() / 12, screen.get_height() / 21))
     
     # Hard Mode ON button 
     path_on_button = "hard_mode_on_button.png"
     
     img_on = pygame.image.load(path_on_button)
 
-    img_on = pygame.transform.scale(img_on, (game.screen.get_height() / 12, game.screen.get_height() / 21))
+    img_on = pygame.transform.scale(img_on, (screen.get_height() / 12, screen.get_height() / 21))
 
     # Setting the positon of the buttons
-    distance_to_the_first_letter = (game.screen.get_width() - keyboard[0][0].get_width() * 10 - 10 * (keyboard[0][0].get_width() / 12)) / 2
+    distance_to_the_first_letter = (screen.get_width() - keyboard[0][0].get_width() * 10 - 10 * (keyboard[0][0].get_width() / 12)) / 2
         
-    distance_to_halfway_of_first_letter = int(game.screen.get_height() / 1.5) + (keyboard[0][0].get_height()) / 4
+    distance_to_halfway_of_first_letter = int(screen.get_height() / 1.5) + (keyboard[0][0].get_height()) / 4
     
-    x, y = ((game.screen.get_width() - distance_to_the_first_letter) + 2 * keyboard[0][0].get_width(), distance_to_halfway_of_first_letter + keyboard[0][0].get_height())
+    x, y = ((screen.get_width() - distance_to_the_first_letter) + 2 * keyboard[0][0].get_width(), distance_to_halfway_of_first_letter + keyboard[0][0].get_height())
         
     hard_mode_buttons_texture.append(img_of) 
     hard_mode_buttons_texture.append(img_on) 
@@ -60,6 +83,9 @@ def load_hard_mode():
 
 def display_hard_mode():
 
+    import game
+    screen = game.screen
+    
     global hard_mode_button
     global loaded_hard_mode_button
 
@@ -68,9 +94,12 @@ def display_hard_mode():
 
     img, x, y = hard_mode_button
     hard_mode_button = (hard_mode_buttons_texture[hard_mode_state], x, y)
-    game.screen.blit(hard_mode_buttons_texture[hard_mode_state], (x, y))
+    screen.blit(hard_mode_buttons_texture[hard_mode_state], (x, y))
 
 def loading_keyboard():
+
+    import game
+    screen = game.screen
     
     for letter in letters:
         # Set state to default, appeareaces to each letter to 0, preprare the texture list of list
@@ -86,7 +115,7 @@ def loading_keyboard():
             img = pygame.image.load(path)
 
             # Scaled the letter so they are scaled with the rezolution
-            img = pygame.transform.scale(img, (game.screen.get_height() / 12, game.screen.get_height() / 12))
+            img = pygame.transform.scale(img, (screen.get_height() / 12, screen.get_height() / 12))
 
             # Saved all textures in a list of list
             all_textures[chr_int(letter)].append(img)
@@ -98,11 +127,11 @@ def loading_keyboard():
     loaded_keyboard = True
 
     # x is calculated, so the keyboard is in the middle of the screen horrizontally
-    native_x = (game.screen.get_width() - game.screen.get_height() / 12 * 10 - 10 * (game.screen.get_height() / 12 / 12)) / 2    
+    native_x = (screen.get_width() - screen.get_height() / 12 * 10 - 10 * (screen.get_height() / 12 / 12)) / 2    
     x = native_x
 
     # y is calculated so the keyboard is in the bottom of the screen
-    native_y = int(game.screen.get_height() / 1.5)
+    native_y = int(screen.get_height() / 1.5)
     y = native_y
 
     cnt = 0
@@ -119,6 +148,10 @@ def loading_keyboard():
             x += (img.get_width() + (img.get_width() / 12))
 
 def display_keyboard():
+
+    import game
+    screen = game.screen
+    
     # Displaying the default keyboard
     global loaded_keyboard
     if loaded_keyboard == False:
@@ -133,23 +166,27 @@ def display_keyboard():
             curr_letter[1], 
             curr_letter[2]
         )
-        game.screen.blit(curr_letter[0], (curr_letter[1], curr_letter[2]))
+        curr_letter = keyboard[chr_int(letter)]
+        screen.blit(curr_letter[0], (curr_letter[1], curr_letter[2]))
     
 
 def load_table_of_guesses():
+
+    import game
+    screen = game.screen
 
     # Drawing a table out of simple empty / blank buttons
 
     path = ".\\letters_textures\\default_blank.png"
     img = pygame.image.load(path)
-    img = pygame.transform.scale(img, (game.screen.get_height() / 12, game.screen.get_height() / 12))
+    img = pygame.transform.scale(img, (screen.get_height() / 12, screen.get_height() / 12))
     global blank
     blank = img
 
     # Designed the table so that it is scaled with the rezolution
     _ = 0
     i = 0
-    native_x = (game.screen.get_width() - img.get_width() * 5 - 5 * (img.get_width() / 12)) / 2    
+    native_x = (screen.get_width() - img.get_width() * 5 - 5 * (img.get_width() / 12)) / 2    
     x = native_x
 
     native_y = img.get_height()
@@ -165,6 +202,9 @@ def load_table_of_guesses():
         y = y + img.get_height() + img.get_height() / 12
 
 def display_table_of_guesses():
+    import game
+    screen = game.screen
+    
     # Loading the default table
     global loaded_table_of_guesses
     if loaded_table_of_guesses == False:
@@ -175,10 +215,12 @@ def display_table_of_guesses():
     for i in range(6):
         for j in range(5):
             curr_img = table_of_words_guessed[i][j]
-            game.screen.blit(curr_img[0], (curr_img[1], curr_img[2]))
+            screen.blit(curr_img[0], (curr_img[1], curr_img[2]))
 
 def load_letter(guesses, letter):
 
+    import wordle
+    guess = wordle.guess
     letter = letter.upper()
     
     # Loading the default texture
@@ -189,19 +231,22 @@ def load_letter(guesses, letter):
         keyboard_state[chr_int(letter)] = 1
 
     # Changing the table's state back to default
-    curr_data = table_of_words_guessed[guesses][len(wordle.guess)]
-    table_of_words_guessed[guesses][len(wordle.guess)] = (
+    curr_data = table_of_words_guessed[guesses][len(guess)]
+    table_of_words_guessed[guesses][len(guess)] = (
         new_texture,
         curr_data[1],
         curr_data[2]
     )
 def remove_letter(guesses):
+
+    import wordle
+    guess = wordle.guess
     
-    curr_data = table_of_words_guessed[guesses][len(wordle.guess) - 1]
+    curr_data = table_of_words_guessed[guesses][len(guess) - 1]
 
     # Changing the selected state back to default 
     # if after the letters removal there are no more appereances of the same letter in the string
-    last_letter = wordle.guess[len(wordle.guess) - 1]
+    last_letter = guess[len(guess) - 1]
     frecv[chr_int(last_letter)] -= 1
     
     # Only reset keyboard state back to default (3) if it was currently selected (1).
@@ -210,29 +255,35 @@ def remove_letter(guesses):
             keyboard_state[chr_int(last_letter)] = 3
     
     # Changing the table's state back to default
-    table_of_words_guessed[guesses][len(wordle.guess) - 1] = (
+    table_of_words_guessed[guesses][len(guess) - 1] = (
         blank,
         curr_data[1],
         curr_data[2]
     )
 
 def change_keyboard_state(index, state):
+
+    import wordle
+    guess = wordle.guess
     
-    letter = ord(wordle.guess[index]) - ord('A')
+    letter = ord(guess[index]) - ord('A')
 
     # Changing the state of the keyboard
     keyboard_state[letter] = state
 
 def change_table_state(index, state):
-    
+
+    import wordle
+    guess = wordle.guess
+    guesses = wordle.guesses
     # Changing the state of the Word Table
-    letter = ord(wordle.guess[index]) - ord('A')
+    letter = ord(guess[index]) - ord('A')
     
     new_texture = all_textures[letter][state]
     
-    curr_data = table_of_words_guessed[wordle.guesses][index]
+    curr_data = table_of_words_guessed[guesses][index]
 
-    table_of_words_guessed[wordle.guesses][index] = (
+    table_of_words_guessed[guesses][index] = (
         new_texture,
         curr_data[1],
         curr_data[2]
@@ -243,6 +294,8 @@ def main():
     display_table_of_guesses()
     # Always call display_keyboard before display_hard_mode because otherwise keyboard[][] won't be initiliazed
     display_hard_mode()
+    display_table_indicator()
+    display_message()
 
 if __name__ == "__main__":
     main()

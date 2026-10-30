@@ -10,8 +10,8 @@ screen = pygame.display.set_mode((1600, 900))
 clock = pygame.time.Clock()
 running = True
 reader = {}
-
 def get_random_word():
+
     with open("valid_solutions.csv", 'r', newline='\n') as input_file:
         reader = csv.DictReader(input_file)
         rows = list(reader)
@@ -22,8 +22,7 @@ def get_random_word():
             return word
     return "HORSE"
 
-word = get_random_word()
-
+word = ""
 def pygame_setup():
     global running
     while running == True:
@@ -39,7 +38,7 @@ def pygame_setup():
                     running = False
                     pygame.quit()
                 else:
-                    if wordle.keyboard_input(event):
+                    if wordle.keyboard_input(event, word):
                         running = False
             if event.type == pygame.MOUSEBUTTONDOWN:
                 # Check for left click only
@@ -65,7 +64,11 @@ def pygame_setup():
     pygame.quit()
 
 def main():
+    global word 
+    word = get_random_word()
+    print(word)
     pygame_setup()
 
 if __name__ == "__main__":
     main()
+    
